@@ -8,7 +8,6 @@ const Users = require('../models/Users');
 const app = express();
 app.use(express.json());
 
-// ✅ MongoDB connection cache
 let isConnected = false;
 async function connectDB() {
   if (isConnected) return;
@@ -19,13 +18,7 @@ async function connectDB() {
   isConnected = true;
 }
 
-// ✅ Health check
-app.get('/', (req, res) => {
-  res.json({ message: 'API is alive 🚀' });
-});
-
-// ✅ Signup route
-app.post('/signup', async (req, res) => {
+app.post('/', async (req, res) => {
   try {
     await connectDB();
     const { name, email, password } = req.body;
@@ -42,4 +35,3 @@ app.post('/signup', async (req, res) => {
 });
 
 module.exports = serverless(app);
- 
