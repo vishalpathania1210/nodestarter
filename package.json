@@ -1,11 +1,9 @@
 {
   "name": "express-vercel-api",
   "version": "1.0.0",
-  "main": "index.js",
   "type": "commonjs",
   "scripts": {
-    "dev": "vercel dev",
-    "start": "node api/signUp.js"
+    "dev": "vercel dev"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
