@@ -1,14 +1,14 @@
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
-const Users = require('../models/Users');
 const bcrypt = require('bcryptjs');
 const serverless = require('serverless-http');
+const Users = require('../models/Users');
 
 const app = express();
 app.use(express.json());
 
-// MongoDB connection (cached)
+// ✅ MongoDB connection cache
 let isConnected = false;
 async function connectDB() {
   if (isConnected) return;
@@ -19,13 +19,13 @@ async function connectDB() {
   isConnected = true;
 }
 
-// GET route for browser test
+// ✅ Health check
 app.get('/', (req, res) => {
-  res.json({ message: 'Signup endpoint is alive 🚀' });
+  res.json({ message: 'API is alive 🚀' });
 });
 
-// POST route for signup
-app.post('/', async (req, res) => {
+// ✅ Signup route
+app.post('/signup', async (req, res) => {
   try {
     await connectDB();
     const { name, email, password } = req.body;
@@ -36,9 +36,10 @@ app.post('/', async (req, res) => {
     const user = new Users({ name, email, password: hashedPassword });
     await user.save();
     res.status(201).json({ message: 'User created successfully' });
-  } catch (error) {
-    res.status(400).json({ message: error.message });
+  } catch (err) {
+    res.status(400).json({ message: err.message });
   }
 });
 
 module.exports = serverless(app);
+ 
