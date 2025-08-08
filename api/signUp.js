@@ -8,7 +8,7 @@ const serverless = require('serverless-http');
 const app = express();
 app.use(express.json());
 
-// Connect to DB (cached for Vercel)
+// ✅ DB connection caching for Vercel
 let isConnected = false;
 async function connectDB() {
   if (isConnected) return;
@@ -19,19 +19,25 @@ async function connectDB() {
   isConnected = true;
 }
 
-// ✅ GET route for testing in browser
+// ✅ GET route to check if endpoint is alive
 app.get('/', (req, res) => {
-  res.json({ message: 'Signup endpoint is alive' });
+  res.json({ message: 'Signup endpoint is alive 🚀' });
 });
 
-// ✅ POST route for creating user
+// ✅ POST route for signup
 app.post('/', async (req, res) => {
   try {
     await connectDB();
     const { name, email, password } = req.body;
+
+    if (!name || !email || !password) {
+      return res.status(400).json({ message: 'All fields are required' });
+    }
+
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = new Users({ name, email, password: hashedPassword });
     await user.save();
+
     res.status(201).json({ message: 'User created successfully' });
   } catch (error) {
     res.status(400).json({ message: error.message });
